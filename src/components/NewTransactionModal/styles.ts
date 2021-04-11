@@ -1,5 +1,3 @@
 import styled from "styled-components";
 
-import Modal from "react-modal";
-
-export const Container = styled(Modal)``;
+export const Container = styled.form``;
