@@ -11,11 +11,20 @@ interface Transaction {
   type: string;
 }
 
+type TransactionInput = Omit<Transaction, "id" | "createdAt">;
+
 interface TransactionsProviderProps {
   children: ReactNode;
 }
 
-export const TransactionsCotext = createContext<Transaction[]>([]);
+interface TransactionsContextData {
+  transactions: Transaction[];
+  createTransaction: (transaction: TransactionInput) => void;
+}
+
+export const TransactionsCotext = createContext<TransactionsContextData>(
+  {} as TransactionsContextData
+);
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -26,8 +35,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     });
   }, []);
 
+  function createTransaction(transaction: TransactionInput) {
+    api.post("transactions", transaction);
+  }
+
   return (
-    <TransactionsCotext.Provider value={transactions}>
+    <TransactionsCotext.Provider value={{ transactions, createTransaction }}>
       {children}
     </TransactionsCotext.Provider>
   );
